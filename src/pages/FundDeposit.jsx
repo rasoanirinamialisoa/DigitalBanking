@@ -1,102 +1,125 @@
-// components/FundDeposit.js
-import React, { useState } from 'react';
-import {
-  TextField,
-  Button,
-  Grid,
-  Typography,
-} from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import '../assets/Deposit.css';
 
-const FundDeposit = () => {
-  const [formData, setFormData] = useState({
-    amount: '',
-    reason: '',
-    effectiveDate: '',
-    registrationDate: '',
-  });
+function DepositForm() {
+    const [amount, setAmount] = useState('');
+    const [type, setType] = useState('');
+    const [effectiveDate, setEffectiveDate] = useState('');
+    const [registrationDate, setRegistrationDate] = useState('');
+    const [categoryOperations, setCategoryOperations] = useState([]);
+    const [selectedCategoryOperation, setSelectedCategoryOperation] = useState('');
+    const [accounts, setAccounts] = useState([]);
+    const [selectedAccount, setSelectedAccount] = useState('');
 
-  const handleChange = (event) => {
-    setFormData({
-      ...formData,
-      [event.target.name]: event.target.value,
-    });
-  };
+    useEffect(() => {
+        fetchCategoryOperations();
+        fetchAccounts();
+    }, []);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // Envoyer les données du formulaire au backend
-    console.log(formData);
-  };
+    const fetchCategoryOperations = async () => {
+        try {
+            const response = await axios.get('http://localhost:8080/api/categoryOperations');
+            console.log('Catégories d\'opérations récupérées:', response.data);
+            setCategoryOperations(response.data);
+        } catch (error) {
+            console.error('Erreur lors de la récupération des opérations de catégorie :', error);
+        }
+    };
 
-  return (
-    <div className="card">
-      <Typography variant="h5" className="card-header">
-        Approvisionnement de solde
-      </Typography>
-      <form onSubmit={handleSubmit}>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <TextField
-              name="amount"
-              label="Montant"
-              type="number"
-              fullWidth
-              value={formData.amount}
-              onChange={handleChange}
-              required
-              className="form-control"
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              name="reason"
-              label="Motif du virement"
-              fullWidth
-              value={formData.reason}
-              onChange={handleChange}
-              required
-              className="form-control"
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              name="effectiveDate"
-              label="Date de prise d'effet"
-              type="date"
-              fullWidth
-              value={formData.effectiveDate}
-              onChange={handleChange}
-              required
-              InputLabelProps={{
-                shrink: true,
-              }}
-              className="form-control"
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              name="registrationDate"
-              label="Date d'enregistrement"
-              type="date"
-              fullWidth
-              value={formData.registrationDate}
-              onChange={handleChange}
-              required
-              InputLabelProps={{
-                shrink: true,
-              }}
-              className="form-control"
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <Button type="submit" variant="contained" color="primary" className="button">
-              Approvisionner
-            </Button>
-          </Grid>
-        </Grid>
-      </form>
-    </div>
-  );
-};
+    const fetchAccounts = async () => {
+        try {
+            const response = await axios.get('http://localhost:8080/api/accounts');
+            console.log('Comptes récupérés:', response.data);
+            setAccounts(response.data);
+        } catch (error) {
+            console.error('Erreur lors de la récupération des comptes :', error);
+        }
+    };
 
-export default FundDeposit;
+    const findCategoryOperationIdByName = (name) => {
+        const operation = categoryOperations.find(operation => operation.name === name);
+        return operation ? operation.id : null;
+    };
+
+    const findAccountIdByAccountNumber = (accountNumber) => {
+        const account = accounts.find(account => account.account_number === accountNumber);
+        return account ? account.id : null;
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            // Récupérer l'ID de la catégorie d'opération en fonction du motif sélectionné
+            const categoryOperationId = findCategoryOperationIdByName(selectedCategoryOperation);
+            console.log('ID de la catégorie d\'opération sélectionnée:', categoryOperationId);
+
+            // Récupérer l'ID du compte en fonction du numéro de compte sélectionné
+            const accountId = findAccountIdByAccountNumber(selectedAccount);
+            console.log('ID du compte sélectionné:', accountId);
+
+            // Afficher les dates obtenues
+            console.log('Date de prise d\'effet:', effectiveDate);
+            console.log('Date d\'enregistrement:', registrationDate);
+
+            // Envoyer les données du formulaire à l'API pour effectuer l'approvisionnement
+            const response = await axios.post('http://localhost:8080/api/transactions', {
+                type: 'Deposit',
+                amount,
+                id_accounts: accountId,
+                id_category_operation: categoryOperationId,
+                effective_date: effectiveDate,
+                registration_date: registrationDate
+            });
+            // Afficher un message de succès ou effectuer d'autres actions nécessaires
+            console.log('Approvisionnement effectué avec succès:', response.data);
+        } catch (error) {
+            // Gérer les erreurs en cas d'échec de l'approvisionnement
+            console.error('Erreur lors de l\'approvisionnement:', error);
+        }
+    };
+
+
+    return (
+        <div className="deposit-container">
+            <div className="deposit-form">
+                <h2>Approvisionnement de solde</h2>
+                <form onSubmit={handleSubmit}>
+                    <div>
+                        <label>Montant :</label>
+                        <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)} required />
+                    </div>
+                    <div>
+                        <label>Compte :</label>
+                        <select value={selectedAccount} onChange={(e) => setSelectedAccount(e.target.value)} required>
+                            <option value="">Sélectionner un compte</option>
+                            {accounts.map(account => (
+                                <option key={account.id} value={account.account_number}>{account.account_number}</option>
+                            ))}
+                        </select>
+                    </div>
+                    <div>
+                        <label>Motif :</label>
+                        <select value={selectedCategoryOperation} onChange={(e) => setSelectedCategoryOperation(e.target.value)} required>
+                            <option value="">Sélectionner un motif</option>
+                            {categoryOperations.map(operation => (
+                                <option key={operation.id} value={operation.name}>{operation.name}</option>
+                            ))}
+                        </select>
+                    </div>
+                    <div>
+                        <label>Date de prise d'effet :</label>
+                        <input type="datetime-local" value={effectiveDate} onChange={(e) => setEffectiveDate(e.target.value)} required />
+                    </div>
+                    <div>
+                        <label>Date d'enregistrement :</label>
+                        <input type="datetime-local" value={registrationDate} onChange={(e) => setRegistrationDate(e.target.value)} required />
+                    </div>
+                    <button type="submit">Approvisionner</button>
+                </form>
+            </div>
+        </div>
+    );
+}
+
+export default DepositForm;

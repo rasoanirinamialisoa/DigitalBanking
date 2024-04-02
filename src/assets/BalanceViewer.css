@@ -1,0 +1,21 @@
+.balance-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.balance-card {
+    background-color: #f4f4f4;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.balance-card h2 {
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+

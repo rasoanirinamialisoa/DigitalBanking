@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import AccountForm from "./pages/AccountForm";
 import WithdrawalForm from "./pages/WithdrawalForm";
 import "./assets/styles/styles.css";
-import Balance from "./pages/Balance";
+import Balance from "./pages/BalanceViewer";
 import FundDeposit from "./pages/FundDeposit";
 import Transfer from "./pages/Transfer";
 import AccountStatements from "./pages/AccountStatements";
