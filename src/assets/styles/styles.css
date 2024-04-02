@@ -1,0 +1,77 @@
+/* App.css */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.header {
+  background-color: #1976d2;
+  color: #fff;
+  padding: 20px;
+  text-align: center;
+}
+
+.title {
+  margin-bottom: 20px;
+}
+
+.card {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.card-header {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.form-control {
+  margin-bottom: 20px;
+}
+
+.button {
+  margin-top: 20px;
+}
+
+
+.card {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.card-header {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.form-control {
+  margin-bottom: 20px;
+}
+
+.button {
+  margin-top: 20px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
