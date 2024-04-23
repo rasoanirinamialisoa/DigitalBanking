@@ -1,14 +1,45 @@
-// components/AccountStatements.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { Table, TableHead, TableRow, TableCell, TableBody, Typography } from '@mui/material';
 
 const AccountStatements = () => {
-  // Simulation des données de relevés de compte
-  const [statements, setStatements] = useState([
-    { date: '2024-03-01', reference: 'REF001', reason: 'Dépôt', credit: 500000, debit: 0, balance: 500000 },
-    { date: '2024-03-05', reference: 'REF002', reason: 'Retrait', credit: 0, debit: 200000, balance: 300000 },
-    // Ajouter d'autres relevés de compte si nécessaire
-  ]);
+  const [statements, setStatements] = useState([]);
+
+  useEffect(() => {
+    fetchTransactions();
+  }, []);
+
+  const fetchTransactions = async () => {
+    try {
+      const transactionsResponse = await axios.get('http://localhost:8080/api/transactions');
+      const accountsResponse = await axios.get('http://localhost:8080/api/accounts');
+      const categoryOperationsResponse = await axios.get('http://localhost:8080/api/categoryOperations');
+      
+      const transactionsData = transactionsResponse.data;
+      const accountsData = accountsResponse.data.reduce((acc, curr) => {
+        acc[curr.id] = curr.balance;
+        return acc;
+      }, {});
+      const categoryOperationsData = categoryOperationsResponse.data.reduce((acc, curr) => {
+        acc[curr.id] = curr.name;
+        return acc;
+      }, {});
+
+      const formattedStatements = transactionsData.map(transaction => ({
+        date: transaction.effective_date,
+        reference: transaction.id,
+        reason: categoryOperationsData[transaction.id_category_operation],
+        credit: transaction.type === 'Deposit' ? transaction.amount : 0,
+        debit: transaction.type === 'retrait' ? transaction.amount : 0,
+        balance: accountsData[transaction.id_accounts]
+      }));
+      formattedStatements.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+      setStatements(formattedStatements);
+    } catch (error) {
+      console.error('Error fetching transactions:', error);
+    }
+  };
 
   return (
     <div className="card">
@@ -18,7 +49,7 @@ const AccountStatements = () => {
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>Date</TableCell>
+            <TableCell>Date d'opération</TableCell>
             <TableCell>Référence</TableCell>
             <TableCell>Motif</TableCell>
             <TableCell>Crédit MGA</TableCell>

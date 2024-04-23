@@ -1,14 +1,30 @@
-import React, { useState } from 'react';
-import { AppBar, Toolbar, Typography, IconButton, Badge, Menu, MenuItem, Drawer, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
-import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
-import TransferWithinAStationIcon from '@mui/icons-material/TransferWithinAStation';
-import ReceiptIcon from '@mui/icons-material/Receipt';
-import AccountBoxIcon from '@mui/icons-material/AccountBox';
-
+import React, { useState } from "react";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  IconButton,
+  Badge,
+  Menu,
+  MenuItem,
+  Drawer,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+} from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
+import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
+import TransferWithinAStationIcon from "@mui/icons-material/TransferWithinAStation";
+import ReceiptIcon from "@mui/icons-material/Receipt";
+import AccountBoxIcon from "@mui/icons-material/AccountBox";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import CategoryIcon from "@mui/icons-material/Category";
+import MoneyOffIcon from "@mui/icons-material/MoneyOff";
+import { Link } from "react-router-dom";
 const Header = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [isLeftSectionOpen, setIsLeftSectionOpen] = useState(false);
@@ -38,7 +54,12 @@ const Header = () => {
     <>
       <AppBar position="static">
         <Toolbar>
-          <IconButton edge="start" color="inherit" aria-label="menu" onClick={handleDrawerToggle}>
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            onClick={handleDrawerToggle}
+          >
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
@@ -49,7 +70,11 @@ const Header = () => {
               <NotificationsIcon />
             </Badge>
           </IconButton>
-          <IconButton color="inherit" aria-label="account" onClick={handleMenuOpen}>
+          <IconButton
+            color="inherit"
+            aria-label="account"
+            onClick={handleMenuOpen}
+          >
             <AccountCircleIcon />
           </IconButton>
           <Menu
@@ -59,7 +84,9 @@ const Header = () => {
           >
             <MenuItem onClick={handleMenuClose}>Mon Profil</MenuItem>
             <MenuItem onClick={handleMenuClose}>Paramètres</MenuItem>
-            <MenuItem onClick={handleLoginLogout}>{isLoggedIn ? 'Déconnexion' : 'Connexion'}</MenuItem>
+            <MenuItem onClick={handleLoginLogout}>
+              {isLoggedIn ? "Déconnexion" : "Connexion"}
+            </MenuItem>
           </Menu>
         </Toolbar>
       </AppBar>
@@ -69,35 +96,88 @@ const Header = () => {
         onClose={handleCloseLeftSection}
       >
         <List>
+
+        <ListItem button>
+            <ListItemIcon>
+              <AccountBoxIcon />
+            </ListItemIcon>
+            <Link
+              to="/AccountForm"
+              style={{ textDecoration: "none", color: "black" }}
+            >
+              <ListItemText primary="Mon Compte" />
+            </Link>
+          </ListItem>
+
           <ListItem button>
             <ListItemIcon>
               <AccountBalanceIcon />
             </ListItemIcon>
-            <ListItemText primary="Balance" />
+            <Link
+              to="/BalanceViewer"
+              style={{ textDecoration: "none", color: "black" }}
+            >
+              <ListItemText primary="Balance" />
+            </Link>
           </ListItem>
           <ListItem button>
             <ListItemIcon>
-              <MonetizationOnIcon />
+              <MoneyOffIcon />
             </ListItemIcon>
-            <ListItemText primary="Faire un dépôt" />
+            <Link
+              to="/WithdrawalForm"
+              style={{ textDecoration: "none", color: "black" }}
+            >
+              <ListItemText primary="Retrait" />
+            </Link>
           </ListItem>
+
           <ListItem button>
             <ListItemIcon>
               <TransferWithinAStationIcon />
             </ListItemIcon>
-            <ListItemText primary="Faire un transfert" />
+            <Link
+              to="/Transfer"
+              style={{ textDecoration: "none", color: "black" }}
+            >
+              <ListItemText primary="Faire un transfert" />
+            </Link>
           </ListItem>
+
           <ListItem button>
             <ListItemIcon>
               <ReceiptIcon />
             </ListItemIcon>
-            <ListItemText primary="Relevés de compte" />
+            <Link
+              to="/AccountStatements"
+              style={{ textDecoration: "none", color: "black" }}
+            >
+              <ListItemText primary="Relevés de compte" />
+            </Link>
+          </ListItem>
+
+
+          <ListItem button>
+            <ListItemIcon>
+              <DashboardIcon />
+            </ListItemIcon>
+            <Link
+              to="/DashboardPage"
+              style={{ textDecoration: "none", color: "black" }}
+            >
+              <ListItemText primary=" Dashboard" />
+            </Link>
           </ListItem>
           <ListItem button>
             <ListItemIcon>
-              <AccountBoxIcon />
+              <CategoryIcon />
             </ListItemIcon>
-            <ListItemText primary="Mon Compte" />
+            <Link
+              to="/CategorizationPage"
+              style={{ textDecoration: "none", color: "black" }}
+            >
+              <ListItemText primary=" Catégorisation d'opérations" />
+            </Link>
           </ListItem>
         </List>
       </Drawer>
